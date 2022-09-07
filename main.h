@@ -12,6 +12,15 @@
 #include <limits.h>
 #include <string.h>
 
+#define BUFSIZE 1024
+#define TOK_BUFSIZE 128
+#define TOK_DELIM " \t\r\n\a"
+
+/**
+ * environ: pounts to an array of pointers to strings
+ */
+
+extern char **environ;
 /**
  * aux_str.c
  */
@@ -36,5 +45,12 @@ char *_strdup(const char *s);
 int _strlen(const char *s);
 int cmp_chars(char str[], const char *delim);
 char *_strtok(char str[], const char *delim);
+
+/**
+ * get_line.c
+ */
+void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
+ssize_t get_line(char **linepre, size_t *n, FILE *stram);
+
 
 #endif
