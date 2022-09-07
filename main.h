@@ -16,6 +16,41 @@
 #define TOK_BUFSIZE 128
 #define TOK_DELIM " \t\r\n\a"
 
+
+/**
+ * struct data - structure that conatains data
+ * @argv: argument vector
+ * @input: commandline written by user
+ * @args: token of the commandline
+ * @status: last status of shell
+ * @counter: line counter
+ * @_environ: environment
+ * @pid: process ID of the shell
+ */
+
+typedef struct data
+{
+	char **argv;
+	char *input;
+	char **args;
+	int status;
+	int counter;
+	char **_environ;
+	char *pid;
+} data_shell;
+
+/**
+ * struct builtin_s - builtin structure
+ * @name: name of the command builtin
+ * @f: datat type pointer function
+ */
+typedef struct builtin_s
+{
+	char *name;
+	int (*f)(data_shell *datash);
+}builtin_t;
+
+
 /**
  * environ: pounts to an array of pointers to strings
  */
@@ -52,5 +87,9 @@ char *_strtok(char str[], const char *delim);
 void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
 ssize_t get_line(char **linepre, size_t *n, FILE *stram);
 
+/**
+ * get_builtin.c
+ */
+int (*get_builtin(char *cmd))(data_shell *datash);
 
 #endif
