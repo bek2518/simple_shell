@@ -92,4 +92,26 @@ ssize_t get_line(char **linepre, size_t *n, FILE *stram);
  */
 int (*get_builtin(char *cmd))(data_shell *datash);
 
+
+/**
+ * env1.c
+ */
+char *_getenv(const char *name, char **environ);
+int _env(data_shell *datash);
+
+
+/**
+ * exec_line.c
+ */
+int exec_line(data_shell *datash);
+
+/**
+ * cmd_exec.c
+ */
+int is_cdir(char *path, int *i);
+char *_which(char *cmd, char **_environ);
+int is_executable(data_shell *datash);
+int check_error_cmd(char *dir, data_shell *datash);
+int cmd_exec(data_shell *datash);
+
 #endif
