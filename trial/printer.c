@@ -1,8 +1,8 @@
-#include "main.h"
-
+#include "shell.h"
 /**
  * print_number -Print Unsigned Int Putchar
  * @n: Unisigned Integer
+ * Return: Void
  */
 void print_number(unsigned int n)
 {
@@ -13,10 +13,10 @@ void print_number(unsigned int n)
 
 	_putchar(x % 10 + '0');
 }
-
 /**
- * print_number_in - Print Number Putchar
- * @n: Integer
+ * print_number_in -Print Number Putchar
+ * @n:Integer
+ * Return: void
  */
 void print_number_in(int n)
 {

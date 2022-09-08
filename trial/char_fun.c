@@ -1,8 +1,9 @@
-#include "main.h"
+#include "shell.h"
 
 /**
  * _putchar - writes the character c to stdout
  * @c: The character to print
+ *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
@@ -12,10 +13,10 @@ int _putchar(char c)
 }
 /**
  * _strncpy - copie a string
- * @dest: destination
- * @src: source
- * @n: int
- * Return: copied string
+ * @dest:char
+ *  @src:char
+ * @n:int
+ * Return:char
  */
 
 char *_strncpy(char *dest, char *src, int n)
@@ -38,7 +39,7 @@ i = 0;
 
 /**
  * _strlen - lenght of string
- * @s: string
+ * @s:char
  * Return:int
  */
 
@@ -55,8 +56,8 @@ return (i);
 
 /**
  * _atoi - convert to a int
- * @s: string
- * Return: converted int
+ * @s:string
+ * Return:int
  */
 int _atoi(char *s)
 {
@@ -80,7 +81,8 @@ int i, j, n, x;
 }
 /**
  * _puts - print a string
- * @str: string
+ * @str:pointer char
+ * return:void
  */
 void _puts(char *str)
 {

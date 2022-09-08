@@ -1,4 +1,4 @@
-.TH man 1 "07 September 2022" "0.20" "HSH man page"
+.TH man 1 "20 November 2020" "0.20" "HSH man page"
 .SH NAME
 .B hsh 
 - Simple Shell Studying purpose Holberton School
@@ -10,7 +10,7 @@
 is Copyright (C) Ahmed Belhaj  and licensed under the MIT license.
 .SH DESCRIPTION
 .B hsh 
-(Simple Shell) is an end of semester project for students at ALX where we expore, 
+(Simple Shell) is an end of semester project for students at Holberton School where we expore, 
 understand and build a working functional simple shell program.
 .B Overview
 
@@ -92,7 +92,12 @@ are handled automatically by
 ,
 .I bash(1)
 ,
-.I _printf(3) 
+.I _printf(3)
+
+.SH BUGS
+No Known bug , please 
+Report 
 .B hsh
+bugs to https://github.com/Theemiss/simple_shell/issues
 .SH AUTHOR
-Bereket Bayou
+Ahmed Belhaj

@@ -1,9 +1,8 @@
-#include "main.h"
-
+#include "shell.h"
 /**
  * history - Fill File By User Input
  * @input: User Input
- * Return: -1 Fail 0 Successs
+ * Return: -1 Fail 0 Succes
  */
 int history(char *input)
 {

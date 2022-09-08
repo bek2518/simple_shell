@@ -1,9 +1,9 @@
-#include "main.h"
+#include "shell.h"
 
 /**
  * main - Simple Shell (Hsh)
  * @argc: Argument Count
- * @argv: Argument Value
+ * @argv:Argument Value
  * Return: Exit Value By Status
  */
 
@@ -46,10 +46,10 @@ int main(__attribute__((unused)) int argc, char **argv)
 	}
 	return (statue);
 }
-
 /**
  * check_builtin - check builtin
- * @cmd: command to check
+ *
+ * @cmd:command to check
  * Return: 0 Succes -1 Fail
  */
 int check_builtin(char **cmd)
@@ -75,7 +75,6 @@ int check_builtin(char **cmd)
 	}
 	return (-1);
 }
-
 /**
  * creat_envi - Creat Array of Enviroment Variable
  * @envi: Array of Enviroment Variable

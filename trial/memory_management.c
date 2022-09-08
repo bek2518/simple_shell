@@ -1,11 +1,11 @@
-#include "main.h"
+#include "shell.h"
 
 /**
- **_realloc -  Reallocates A Memory Block
+ **_realloc -  Reallocates A Memory Block Using Malloc And Free
  *@ptr: Pointer
  *@old_size: Previous Size Of The Pointer
  *@new_size: New Size Of The Pointer
- *Return: Pointer to Rellocated Memory
+ *Return: Void Pointer Rellocated Memory
  */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
@@ -32,12 +32,13 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 		free(ptr);
 	}
 	return (result);
-}
 
+}
 /**
- * free_all - Free Array Of Pointer
- * @cmd: Array Pointer
- * @line :Char Pointer
+ * free_all - Free Array Of Char Pointer And Char Pointer
+ * @cmd:Array Pointer
+ * @line:Char Pointer
+ * Return: Void
  */
 void free_all(char **cmd, char *line)
 {
@@ -48,10 +49,11 @@ void free_all(char **cmd, char *line)
 }
 
 /**
- * _memcpy - Copy memory
- * @dest: Destination
- * @src: Source
- * @n: Size
+ * _memcpy - Copy Byte From Source To Destination
+ * @dest: Destination Pointer
+ * @src: Source Pointer
+ * @n: Size (How Much You Will Copy)
+ *Return: Void Pointer
  */
 char *_memcpy(char *dest, char *src, unsigned int n)
 {
@@ -63,12 +65,12 @@ char *_memcpy(char *dest, char *src, unsigned int n)
 	}
 	return (dest);
 }
-
 /**
  * fill_an_array - Fill An Array By Constant Byte
- * @a: Void Pointer
+ * @a:Void Pointer
  * @el: Int
  * @len:Length Int
+ *Return: Void Pointer
  */
 void *fill_an_array(void *a, int el, unsigned int len)
 {
@@ -83,9 +85,8 @@ void *fill_an_array(void *a, int el, unsigned int len)
 	}
 	return (a);
 }
-
 /**
- * _calloc -  Allocates Memory
+ * _calloc -  Allocates Memory For An Array, Using Malloc.
  * @size: Size
  * Return: Void Pointer
  */

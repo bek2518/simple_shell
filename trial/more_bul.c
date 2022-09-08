@@ -1,10 +1,10 @@
-#include "main.h"
+#include "shell.h"
 
 /**
  * history_dis - Display History Of User Input Simple Shell
- * @c: Parsed Command
- * @s: Statue Of Last Excute
- * Return: 0 Success -1 Fail
+ * @c:Parsed Command
+ * @s:Statue Of Last Excute
+ * Return: 0 Succes -1 Fail
  */
 int history_dis(__attribute__((unused))char **c, __attribute__((unused))int s)
 {
@@ -35,7 +35,6 @@ int history_dis(__attribute__((unused))char **c, __attribute__((unused))int s)
 	fclose(fp);
 	return (0);
 }
-
 /**
  * print_echo - Excute Normal Echo
  * @cmd: Parsed Command

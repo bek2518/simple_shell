@@ -14,7 +14,7 @@ Clone This Repo
 
 compile it with  
 
-`gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh`.  
+`gcc 4.8.4 -Wall -Werror -Wextra -pedantic *.c -o hsh`.  
 You can then run it by invoking `./hsh` in that same directory.  
 
 ### How to use it

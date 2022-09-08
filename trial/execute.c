@@ -1,10 +1,10 @@
-#include "main.h"
+#include "shell.h"
 
 /**
  * handle_builtin - Handle Builtin Command
  * @cmd: Parsed Command
- * @er: statue of last Excute
- * Return: -1 Fail 0 Success
+ * @er:statue of last Excute
+ * Return: -1 Fail 0 Succes (Return :Excute Builtin)
  */
 
 int handle_builtin(char **cmd, int er)
@@ -29,13 +29,13 @@ int handle_builtin(char **cmd, int er)
 	}
 	return (-1);
 }
-
 /**
  * check_cmd - Excute Simple Shell Command (Fork,Wait,Excute)
- * @cmd: Parsed Command
+ *
+ * @cmd:Parsed Command
  * @input: User Input
- * @c: Shell Excution Time Case of Command Not Found
- * @argv: Program Name
+ * @c:Shell Excution Time Case of Command Not Found
+ * @argv:Program Name
  * Return: 1 Case Command Null -1 Wrong Command 0 Command Excuted
  */
 int check_cmd(char **cmd, char *input, int c, char **argv)
@@ -74,7 +74,6 @@ int check_cmd(char **cmd, char *input, int c, char **argv)
 	wait(&status);
 	return (0);
 }
-
 /**
  * signal_to_handel - Handle ^C
  * @sig:Captured Signal

@@ -1,10 +1,10 @@
-#include "main.h"
-
+#include "shell.h"
 /**
- *  _prerror - Print Error
- * @argv: program name
- * @c: Error Count
- * @cmd: Command
+ *  _prerror - Print Custome Error
+ * @argv:Program Name
+ * @c:Error Count
+ * @cmd:Command
+ * Return: Void
  */
 void _prerror(char **argv, int c, char **cmd)
 {

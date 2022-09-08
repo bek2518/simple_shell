@@ -1,9 +1,8 @@
-#include "main.h"
-
+#include "shell.h"
 /**
  * read_file - Read Command From File
- * @filename: Filename
- * @argv: Program Name
+ * @filename:Filename
+ * @argv:Program Name
  * Return: -1 or  0
  */
 
@@ -30,13 +29,12 @@ void read_file(char *filename, char **argv)
 	fclose(fp);
 	exit(0);
 }
-
 /**
  * treat_file - PARSE Check Command Fork Wait Excute in Line of File
  * @line: Line From A File
- * @counter: Error Counter
- * @fp: File Descriptor
- * @argv: Program Name
+ * @counter:Error Counter
+ * @fp:File Descriptor
+ * @argv:Program Name
  * Return : Excute A line void
  */
 void treat_file(char *line, int counter, FILE *fp, char **argv)
@@ -61,12 +59,11 @@ void treat_file(char *line, int counter, FILE *fp, char **argv)
 			free(cmd);
 		}
 }
-
 /**
  * exit_bul_for_file - Exit Shell Case Of File
  * @line: Line From A File
  * @cmd: Parsed Command
- * @fd: File Descriptor
+ * @fd:File Descriptor
  * Return : Case Of Exit in A File Line
  */
 void exit_bul_for_file(char **cmd, char *line, FILE *fd)
