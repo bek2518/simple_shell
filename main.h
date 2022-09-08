@@ -4,7 +4,7 @@
 /***** MACROS *****/
 
 #define PRINT(c) (write(STDOUT_FILENO, c, _strlen(c)))
-#define BUFSIZE 10240
+#define BUFSIZE 1024
 #define DELIMITER " \t\r\n\a"
 
 /*** STANDARD LIBRARIES ***/
