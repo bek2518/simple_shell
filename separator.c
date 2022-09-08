@@ -20,7 +20,7 @@ char **separator(char *input)
 	commands = malloc(sizeof(char *) * buffsize);
 	if (!commands)
 	{
-		free(commands);
+		/*free(commands);*/
 		perror("hsh");
 		return (NULL);
 	}
