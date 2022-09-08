@@ -1,95 +1,100 @@
 #include "main.h"
 
 /**
- * _putchar - writes the character c to stdout
- * @c: The character to print
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * get_len - Get the lenght of a number.
+ * @n: type int number.
+ * Return: Lenght of a number.
  */
-int _putchar(char c)
+int get_len(int n)
 {
-	return (write(1, &c, 1));
-}
-/**
- * _strncpy - copie a string
- * @dest: destination
- * @src: source
- * @n: int
- * Return: copied string
- */
+	unsigned int n1;
+	int lenght = 1;
 
-char *_strncpy(char *dest, char *src, int n)
-{
-int i;
-
-i = 0;
-	while (i < n && *(src + i))
+	if (n < 0)
 	{
-	*(dest + i) = *(src + i);
-	i++;
+		lenght++;
+		n1 = n * -1;
 	}
-	while (i < n)
+	else
 	{
-	*(dest + i) = '\0';
-	i++;
+		n1 = n;
 	}
-	return (dest);
-}
+	while (n1 > 9)
+	{
+		lenght++;
+		n1 = n1 / 10;
+	}
 
+	return (lenght);
+}
 /**
- * _strlen - lenght of string
- * @s: string
- * Return:int
+ * aux_itoa - function converts int to string.
+ * @n: type int number
+ * Return: String.
  */
-
-int _strlen(char *s)
+char *aux_itoa(int n)
 {
-	int i;
+	unsigned int n1;
+	int lenght = get_len(n);
+	char *buffer;
 
-		for (i = 0; s[i] != '\0'; i++)
-		{
-			continue;
-		}
-return (i);
+	buffer = malloc(sizeof(char) * (lenght + 1));
+	if (buffer == 0)
+		return (NULL);
+
+	*(buffer + lenght) = '\0';
+
+	if (n < 0)
+	{
+		n1 = n * -1;
+		buffer[0] = '-';
+	}
+	else
+	{
+		n1 = n;
+	}
+
+	lenght--;
+	do {
+		*(buffer + lenght) = (n1 % 10) + '0';
+		n1 = n1 / 10;
+		lenght--;
+	}
+	while (n1 > 0)
+		;
+	return (buffer);
 }
 
 /**
- * _atoi - convert to a int
- * @s: string
- * Return: converted int
+ * _atoi - converts a string to an integer.
+ * @s: input string.
+ * Return: integer.
  */
 int _atoi(char *s)
 {
-int i, j, n, x;
+	unsigned int count = 0, size = 0, oi = 0, pn = 1, m = 1, i;
 
-	i = n = 0;
-	x = 1;
-	while ((s[i] < '0' || s[i] > '9') && (s[i] != '\0'))
+	while (*(s + count) != '\0')
 	{
-		if (s[i] == '-')
-			x *= -1;
-		i++;
-	}
-	j = i;
-	while ((s[j] >= '0') && (s[j] <= '9'))
-	{
-		n = (n * 10) + x * ((s[j]) - '0');
-		j++;
-	}
-	return (n);
-}
-/**
- * _puts - print a string
- * @str: string
- */
-void _puts(char *str)
-{
-	int i;
+		if (size > 0 && (*(s + count) < '0' || *(s + count) > '9'))
+			break;
 
-	for (i = 0; str[i] != '\0'; i++)
-	{
-		_putchar(str[i]);
+		if (*(s + count) == '-')
+			pn *= -1;
+
+		if ((*(s + count) >= '0') && (*(s + count) <= '9'))
+		{
+			if (size > 0)
+				m *= 10;
+			size++;
+		}
+		count++;
 	}
-_putchar('\n');
-return;
+
+	for (i = count - size; i < count; i++)
+	{
+		oi = oi + ((*(s + i) - 48) * m);
+		m /= 10;
+	}
+	return (oi * pn);
 }

@@ -1,113 +1,110 @@
 #include "main.h"
 
 /**
- * _strcpy - Copies string
- * @dest:Destination
- * @src: source
- * Return: Copy of string
+ * _strcat - concatenate two strings
+ * @dest: char pointer the dest of the copied str
+ * @src: const char pointer the source of str
+ * Return: the dest
+ */
+char *_strcat(char *dest, const char *src)
+{
+	int i;
+	int j;
+
+	for (i = 0; dest[i] != '\0'; i++)
+		;
+
+	for (j = 0; src[j] != '\0'; j++)
+	{
+		dest[i] = src[j];
+		i++;
+	}
+
+	dest[i] = '\0';
+	return (dest);
+}
+
+/**
+ * *_strcpy - Copies the string pointed to by src.
+ * @dest: Type char pointer the dest of the copied str
+ * @src: Type char pointer the source of str
+ * Return: the dest.
  */
 char *_strcpy(char *dest, char *src)
 {
-int i;
 
-i = 0;
-	while (src[i])
+	size_t a;
+
+	for (a = 0; src[a] != '\0'; a++)
 	{
-		dest[i] = src[i];
-		i++;
+		dest[a] = src[a];
 	}
-dest[i] = '\0';
-return (dest);
+	dest[a] = '\0';
+
+	return (dest);
 }
 
 /**
- * _strcat - Concatnates Two String
- * @dest: First String
- * @src: Second String
- * Return: concatenated string
+ * _strcmp - Function that compares two strings.
+ * @s1: type str compared
+ * @s2: type str compared
+ * Return: Always 0.
  */
-char *_strcat(char *dest, char *src)
+int _strcmp(char *s1, char *s2)
 {
-	char *s = dest;
+	int i;
 
-	while (*dest != '\0')
-	{
-		dest++;
-	}
+	for (i = 0; s1[i] == s2[i] && s1[i]; i++)
+		;
 
-	while (*src != '\0')
-	{
-		*dest = *src;
-		dest++;
-		src++;
-	}
-	*dest = '\0';
-	return (s);
+	if (s1[i] > s2[i])
+		return (1);
+	if (s1[i] < s2[i])
+		return (-1);
+	return (0);
 }
 
 /**
- * _strchr - Locate Charactere In String
- * @s: String 
- * @c: Char To Search For
- * Return: Pointer To Char
+ * _strchr - locates a character in a string,
+ * @s: string.
+ * @c: character.
+ * Return: the pointer to the first occurrence of the character c.
  */
 char *_strchr(char *s, char c)
 {
+	unsigned int i = 0;
 
-	do		{
-
-		if (*s == c)
-			{
-			break;
-			}
-		}	while (*s++);
-
-return (s);
+	for (; *(s + i) != '\0'; i++)
+		if (*(s + i) == c)
+			return (s + i);
+	if (*(s + i) == c)
+		return (s + i);
+	return ('\0');
 }
 
 /**
- * _strncmp - Compares Two Strings.
- * @s1: First String.
- * @s2: Second String.
- * @n: Amount Of Characters To Compare.
- * Return: 1 If The Strings Don't Match Otherwise 0
+ * _strspn - gets the length of a prefix substring.
+ * @s: initial segment.
+ * @accept: accepted bytes.
+ * Return: the number of accepted bytes.
  */
-int _strncmp(const char *s1, const char *s2, size_t n)
+int _strspn(char *s, char *accept)
 {
-	size_t i;
+	int i, j, bool;
 
-	if (s1 == NULL)
-		return (-1);
-	for (i = 0; i < n && s2[i]; i++)
+	for (i = 0; *(s + i) != '\0'; i++)
 	{
-		if (s1[i] != s2[i])
+		bool = 1;
+		for (j = 0; *(accept + j) != '\0'; j++)
 		{
-			return (1);
+			if (*(s + i) == *(accept + j))
+			{
+				bool = 0;
+				break;
+			}
 		}
+		if (bool == 1)
+			break;
 	}
-	return (0);
-}
-/**
- * _strdup - Duplicate A String
- * @str: String
- * Return: Duplicate String or NULL if failed
- */
-char *_strdup(char *str)
-{
-	size_t len, i;
-	char *str2;
-
-	len = _strlen(str);
-	str2 = malloc(sizeof(char) * (len + 1));
-	if (!str2)
-	{
-		return (NULL);
-	}
-
-	for (i = 0; i <= len; i++)
-	{
-		str2[i] = str[i];
-	}
-
-	return (str2);
+	return (i);
 }

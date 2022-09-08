@@ -1,97 +1,67 @@
 #include "main.h"
 
 /**
- * path_cmd -  Search In $PATH For Excutable Command
- * @cmd: Parsed Input
- * Return: 1  Failure  0  Success.
+ * cmp_env_name - compares env variables names
+ * @nenv: name of environment variable
+ * @name: name passed
+ * Return: 0 if not equal
  */
-int path_cmd(char **cmd)
+int cmp_env_name(const char *nenv, const char *name)
 {
-	char *path, *value, *cmd_path;
-	struct stat buf;
+	int i;
 
-	path = _getenv("PATH");
-	value = _strtok(path, ":");
-	while (value != NULL)
+	for (i = 0; nenv[i] != '='; i++)
 	{
-		cmd_path = build(*cmd, value);
-		if (stat(cmd_path, &buf) == 0)
+		if (nenv[i] != name[i])
 		{
-			*cmd = _strdup(cmd_path);
-			free(cmd_path);
-			free(path);
 			return (0);
 		}
-		free(cmd_path);
-		value = _strtok(NULL, ":");
 	}
-	free(path);
-
-	return (1);
+	return (i + 1);
 }
 
 /**
- * build - Build Command
- * @token: Excutable Command
- * @value: Dirctory Conatining Command
- * Return: Parsed Full Path Of Command Or NULL Case Failed
+ * _getenv - get an environmental variable
+ * @name: name of the environment variable
+ * @_environ: environment variable
+ * Return: _environ if found or NULL
  */
-char *build(char *token, char *value)
+char *_getenv(const char *name, char **_environ)
 {
-	char *cmd;
-	size_t len;
+	char *ptr_env;
+	int i, mov;
 
-	len = _strlen(value) + _strlen(token) + 2;
-	cmd = malloc(sizeof(char) * len);
-	if (cmd == NULL)
+	ptr_env = NULL;
+	mov = 0;
+
+	for (i = 0; _environ[i]; i++)
 	{
-		return (NULL);
-	}
-
-	memset(cmd, 0, len);
-
-	cmd = _strcat(cmd, value);
-	cmd = _strcat(cmd, "/");
-	cmd = _strcat(cmd, token);
-
-	return (cmd);
-}
-
-/**
- * _getenv - Gets The Value Of Enviroment Variable By Name
- * @name: Environment Variable Name
- * Return: The Value of the Environment Variable Else NULL.
- */
-char *_getenv(char *name)
-{
-	size_t nl, vl;
-	char *value;
-	int i, x, j;
-
-	nl = _strlen(name);
-	for (i = 0 ; environ[i]; i++)
-	{
-		if (_strncmp(name, environ[i], nl) == 0)
+		mov = cmp_env_name(_environ[i], name);
+		if (mov)
 		{
-			vl = _strlen(environ[i]) - nl;
-			value = malloc(sizeof(char) * vl);
-			if (!value)
-			{
-				free(value);
-				perror("unable to alloc");
-				return (NULL);
-			}
-
-			j = 0;
-			for (x = nl + 1; environ[i][x]; x++, j++)
-			{
-				value[j] = environ[i][x];
-			}
-			value[j] = '\0';
-
-			return (value);
+			ptr_env = _environ[i];
+			break;
 		}
 	}
+	return (ptr_env + mov);
+}
 
-	return (NULL);
+/**
+ * _env - prints environmental variables
+ * @datash: data
+ * Return: 1 if successful
+ */
+int _env(data_shell *datash)
+{
+	int i, j;
+
+	for (i = 0; datash->_environ[i]; i++)
+	{
+		for (j = 0; datash->_environ[i][j]; j++)
+			;
+		write(STDOUT_FILENO, datash->_environ[i], j);
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	datash->status = 0;
+	return (1);
 }

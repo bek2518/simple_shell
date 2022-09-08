@@ -1,156 +1,156 @@
 #include "main.h"
 
 /**
- * exit_bul - Exit Statue Shell
- * @cmd: Parsed Command
- * @input: User Input
- * @argv: Program Name
- * @c: Excute Count
- * Return: Void (Exit Statue)
+ * cd_dot - changes to the parent directory
+ * @datash: data relevant (environ)
  */
-void  exit_bul(char **cmd, char *input, char **argv, int c)
+void cd_dot(data_shell *datash)
 {
-	int statue, i = 0;
+	char pwd[PATH_MAX];
+	char *dir, *cp_pwd, *cp_strtok_pwd;
 
-	if (cmd[1] == NULL)
+	getcwd(pwd, sizeof(pwd));
+	cp_pwd = _strdup(pwd);
+	set_env("OLDPWD", cp_pwd, datash);
+	dir = datash->args[1];
+	if (_strcmp(".", dir) == 0)
 	{
-		free(input);
-		free(cmd);
-		exit(EXIT_SUCCESS);
+		set_env("PWD", cp_pwd, datash);
+		free(cp_pwd);
+		return;
 	}
-	while (cmd[1][i])
+	if (_strcmp("/", cp_pwd) == 0)
 	{
-		if (_isalpha(cmd[1][i++]) != 0)
-		{
-			_prerror(argv, c, cmd);
-			break;
-		}
-		else
-		{
-			statue = _atoi(cmd[1]);
-			free(input);
-			free(cmd);
-			exit(statue);
-		}
+		free(cp_pwd);
+		return;
 	}
-}
-
-/**
- * change_dir - Change Dirctorie
- * @cmd: Parsed Command
- * @er: Statue Last Command Excuted
- * Return: 0 Succes 1 Failed (For Old Pwd Always 0 Case No Old PWD)
- */
-int change_dir(char **cmd, __attribute__((unused))int er)
-{
-	int value = -1;
-	char cwd[PATH_MAX];
-
-	if (cmd[1] == NULL)
-		value = chdir(getenv("HOME"));
-	else if (_strcmp(cmd[1], "-") == 0)
+	cp_strtok_pwd = cp_pwd;
+	rev_string(cp_strtok_pwd);
+	cp_strtok_pwd = _strtok(cp_strtok_pwd, "/");
+	if (cp_strtok_pwd != NULL)
 	{
-		value = chdir(getenv("OLDPWD"));
+		cp_strtok_pwd = _strtok(NULL, "\0");
+
+		if (cp_strtok_pwd != NULL)
+			rev_string(cp_strtok_pwd);
+	}
+	if (cp_strtok_pwd != NULL)
+	{
+		chdir(cp_strtok_pwd);
+		set_env("PWD", cp_strtok_pwd, datash);
 	}
 	else
-		value = chdir(cmd[1]);
-
-	if (value == -1)
 	{
-		perror("hsh");
-		return (-1);
+		chdir("/");
+		set_env("PWD", "/", datash);
 	}
-	else if (value != -1)
-	{
-		getcwd(cwd, sizeof(cwd));
-		setenv("OLDPWD", getenv("PWD"), 1);
-		setenv("PWD", cwd, 1);
-	}
-	return (0);
+	datash->status = 0;
+	free(cp_pwd);
 }
 
 /**
- * dis_env - Display Enviroment Variable
- * @cmd: Parsed Command
- * @er: Statue of Last command Excuted
- * Return: Always 0
+ * cd_to - changes to a directory given
+ * by the user
+ * @datash: data relevant (directories)
  */
-int dis_env(__attribute__((unused)) char **cmd, __attribute__((unused)) int er)
+void cd_to(data_shell *datash)
 {
-size_t i;
-	int len;
+	char pwd[PATH_MAX];
+	char *dir, *cp_pwd, *cp_dir;
 
-	for (i = 0; environ[i] != NULL; i++)
+	getcwd(pwd, sizeof(pwd));
+
+	dir = datash->args[1];
+	if (chdir(dir) == -1)
 	{
-		len = _strlen(environ[i]);
-		write(1, environ[i], len);
-		write(STDOUT_FILENO, "\n", 1);
+		get_error(datash, 2);
+		return;
 	}
-	return (0);
+
+	cp_pwd = _strdup(pwd);
+	set_env("OLDPWD", cp_pwd, datash);
+
+	cp_dir = _strdup(dir);
+	set_env("PWD", cp_dir, datash);
+
+	free(cp_pwd);
+	free(cp_dir);
+
+	datash->status = 0;
+
+	chdir(dir);
 }
 
 /**
- * display_help - Displaying Help For Builtin
- * @cmd: Parsed Command
- * @er: Statue Of Last Command Excuted
- * Return: 0 Succes -1 Fail
+ * cd_previous - changes to the previous directory
+ * @datash: data relevant (environ)
  */
-int display_help(char **cmd, __attribute__((unused))int er)
+void cd_previous(data_shell *datash)
 {
-	int fd, fw, rd = 1;
-	char c;
+	char pwd[PATH_MAX];
+	char *p_pwd, *p_oldpwd, *cp_pwd, *cp_oldpwd;
 
-	fd = open(cmd[1], O_RDONLY);
-	if (fd < 0)
-	{
-		perror("Error");
-		return (0);
-	}
-	while (rd > 0)
-	{
-		rd = read(fd, &c, 1);
-		fw = write(STDOUT_FILENO, &c, rd);
-		if (fw < 0)
-		{
-			return (-1);
-		}
-	}
-	_putchar('\n');
-	return (0);
-}
+	getcwd(pwd, sizeof(pwd));
+	cp_pwd = _strdup(pwd);
 
-/**
- * echo_bul - Excute Echo Cases
- * @st: Statue Of Last Command Excuted
- * @cmd: Parsed Command
- * Return: Always 0 Or Excute Normal Echo
- */
-int echo_bul(char **cmd, int st)
-{
-	char *path;
-	unsigned int  pid = getppid();
+	p_oldpwd = _getenv("OLDPWD", datash->_environ);
 
-	if (_strncmp(cmd[1], "$?", 2) == 0)
-	{
-		print_number_in(st);
-		PRINTER("\n");
-	}
-	else if (_strncmp(cmd[1], "$$", 2) == 0)
-	{
-		print_number(pid);
-		PRINTER("\n");
-
-	}
-	else if (_strncmp(cmd[1], "$PATH", 5) == 0)
-	{
-		path = _getenv("PATH");
-		PRINTER(path);
-		PRINTER("\n");
-		free(path);
-
-	}
+	if (p_oldpwd == NULL)
+		cp_oldpwd = cp_pwd;
 	else
-		return (print_echo(cmd));
+		cp_oldpwd = _strdup(p_oldpwd);
 
-	return (1);
+	set_env("OLDPWD", cp_pwd, datash);
+
+	if (chdir(cp_oldpwd) == -1)
+		set_env("PWD", cp_pwd, datash);
+	else
+		set_env("PWD", cp_oldpwd, datash);
+
+	p_pwd = _getenv("PWD", datash->_environ);
+
+	write(STDOUT_FILENO, p_pwd, _strlen(p_pwd));
+	write(STDOUT_FILENO, "\n", 1);
+
+	free(cp_pwd);
+	if (p_oldpwd)
+		free(cp_oldpwd);
+
+	datash->status = 0;
+
+	chdir(p_pwd);
+}
+
+/**
+ * cd_to_home - changes to home directory
+ * @datash: data relevant (environ)
+ */
+void cd_to_home(data_shell *datash)
+{
+	char *p_pwd, *home;
+	char pwd[PATH_MAX];
+
+	getcwd(pwd, sizeof(pwd));
+	p_pwd = _strdup(pwd);
+
+	home = _getenv("HOME", datash->_environ);
+
+	if (home == NULL)
+	{
+		set_env("OLDPWD", p_pwd, datash);
+		free(p_pwd);
+		return;
+	}
+
+	if (chdir(home) == -1)
+	{
+		get_error(datash, 2);
+		free(p_pwd);
+		return;
+	}
+
+	set_env("OLDPWD", p_pwd, datash);
+	set_env("PWD", home, datash);
+	free(p_pwd);
+	datash->status = 0;
 }

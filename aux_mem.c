@@ -1,107 +1,82 @@
 #include "main.h"
 
 /**
- **_realloc -  Reallocates A Memory Block
- *@ptr: Pointer
- *@old_size: Previous Size Of The Pointer
- *@new_size: New Size Of The Pointer
- *Return: Pointer to Rellocated Memory
+ * _memcpt - copies information
+ * @newptr: destination pointer
+ * @ptr: source pointer
+ * @size: size of new pointer
+ */
+void _memcpy(void *newptr,const  void *ptr, unsigned int size)
+{
+	char *char_ptr = (char *)ptr;
+	char *char_newptr = (char *)newptr;
+	unsigned int i;
+
+	for (i = 0; i < size; size++)
+		char_newptr[i] = char_ptr[i];
+}
+
+/**
+ * _realloc - reallocates the memory block
+ * @ptr: pointer to memory previously allocated
+ * @old_size: size in byte
+ * @new_size: new size to be allocated in byte
+ * Return: ptr
  */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	void *result;
+	void *newptr;
+
+	if (ptr == NULL)
+		return (malloc(new_size));
+	if (new_size == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
 
 	if (new_size == old_size)
 		return (ptr);
-	if (new_size == 0 && ptr)
-	{
-		free(ptr);
-		return (NULL);
-	}
-	result = malloc(new_size);
-	if (result == NULL)
-		return (NULL);
-	if (ptr == NULL)
-	{
-		fill_an_array(result, '\0', new_size);
-		free(ptr);
-	}
+	newptr = malloc(new_size);
+	if (newptr == NULL)
+		return(NULL);
+
+	if (new_size < old_size)
+		_memcpy(newptr, ptr, new_size);
 	else
-	{
-		_memcpy(result, ptr, old_size);
-		free(ptr);
-	}
-	return (result);
+		_memcpy(newptr, ptr, old_size);
+	free(ptr);
+	return (newptr);
 }
 
 /**
- * free_all - Free Array Of Pointer
- * @cmd: Array Pointer
- * @line :Char Pointer
+ * _reallocdp - reallocates a memory block of a double pointer.
+ * @ptr: double pointer to the memory previously allocated.
+ * @old_size: size, in bytes, of the allocated space of ptr.
+ * @new_size: new size, in bytes, of the new memory block.
+ * Return: ptr.
+ * if new_size == old_size, returns ptr without changes.
+ * if malloc fails, returns NULL.
  */
-void free_all(char **cmd, char *line)
+char **_reallocdp(char **ptr, unsigned int old_size, unsigned int new_size)
 {
-	free(cmd);
-	free(line);
-	cmd = NULL;
-	line = NULL;
-}
-
-/**
- * _memcpy - Copy memory
- * @dest: Destination
- * @src: Source
- * @n: Size
- */
-char *_memcpy(char *dest, char *src, unsigned int n)
-{
+	char **newptr;
 	unsigned int i;
 
-	for (i = 0; i < n; i++)
-	{
-		dest[i] = src[i];
-	}
-	return (dest);
-}
+	if (ptr == NULL)
+		return (malloc(sizeof(char *) * new_size));
 
-/**
- * fill_an_array - Fill An Array By Constant Byte
- * @a: Void Pointer
- * @el: Int
- * @len:Length Int
- */
-void *fill_an_array(void *a, int el, unsigned int len)
-{
-	char *p = a;
-	unsigned int i = 0;
+	if (new_size == old_size)
+		return (ptr);
 
-	while (i < len)
-	{
-		*p = el;
-		p++;
-		i++;
-	}
-	return (a);
-}
+	newptr = malloc(sizeof(char *) * new_size);
+	if (newptr == NULL)
+		return (NULL);
 
-/**
- * _calloc -  Allocates Memory
- * @size: Size
- * Return: Void Pointer
- */
-void *_calloc(unsigned int size)
-{
-	char *a;
-	unsigned int i;
+	for (i = 0; i < old_size; i++)
+		newptr[i] = ptr[i];
 
-	if (size == 0)
-	return (NULL);
-	a = malloc(size);
-	if (a == NULL)
-	return (NULL);
-	for (i = 0; i < size; i++)
-	{
-		a[i] = '\0';
-	}
-	return (a);
+	free(ptr);
+
+	return (newptr);
 }

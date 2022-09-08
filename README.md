@@ -1,175 +1,260 @@
-# Simple Shell
+# Simple Shell project 0x16.c - Beksh
 
-### Introduction
-This repository is an ALX (https://www.alxethiopia.com/) Project. The school project consisted in writing a shell like sh (Bourne Shell) by Stephen Bourne  , in **C**, using a limited number of standard library functions.
+This is a simple UNIX command interpreter based on bash and Sh.
 
-The goal in this project was to make us understand how a shell works. To single out some items: what is the *environment*, the difference between *functions* and *system calls*, how to create *processes* using `execve`...  
+## Overview
 
-## Usage 
-In order to run this program, 
+**Beksh** is a sh-compatible command language interpreter that executes commands read from the standard input or from a file.
 
-Clone This Repo
+### Invocation
 
-`` git clone https://github.com/bek2518/simple_shell ``
-
-compile it with  
-
-`gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh`.  
-You can then run it by invoking `./hsh` in that same directory.  
-
-### How to use it
-In order to use this shell, in a terminal, first run the program:    
-`prompt$ ./hsh`  
-It wil then display a simple prompt and wait for commands.  
-`$ `   
-A command will be of the type `$ command`  
-This shell can handle two types of commands: builtins and normal program.
-##### List of built-ins
-Currently the list of built-ins I wrote is:  
-* cd [directory]  
-Switch to the specified directory (path).
-* env  
-Displays the environment variable
-* exit [exitstatus]  
-Exit from the program with exitstatus value. 0 by default.
-* getenv NAME  
-Return the value of the NAME variable if it is in the environment
-* help [command]  
-Displays the syntax for the command, or all commands.  
-* history  
-Displays the last typed user .
-* echo [$$] or [$?] or [$PATH]
-Return pid and exit statue and PATH.
-##### Command
-Basicly Every Program in `$PATH`
-It Support Single Word like `ls` 
-
-It Handle Path `ls /tmp`
-
-it Handle Options Like `ls -l`
-
-it Handle All Three Togther Like `ls -l /var `
-
-it Handle Command Path Also Like `/bin/ls` And All The Option And Path Like `/bin/ls -l /var`
-
-it Handle Comments **#** 
-## Examples Command
-**Example 1**
+Usage: **beksh** 
+beksh is started with the standard input connected to the terminal. To start, compile all .c located in this repository by using this command: 
 ```
-Username@your-regular-prompt:~$ ./hsh
-$ pwd
-/home/username/
-$ ^D
-Username@your-regular-prompt:~$
+gcc -Wall -Werror -Wextra -pedantic -sth=gnu89 *.c -o beksh
+./beksh
 ```
-**Example 2**
-```
-Username@your-regular-prompt:~$ ./hsh
-$ ls -l /tmp 
--rw------- 1 username username    0 Dec  5 12:09 config-err-aAMZrR
-drwx------ 3 root   root   4096 Dec  5 12:09 systemd-private-062a0eca7f2a44349733e78cb4abdff4-colord.service-V7DUzr
-drwx------ 3 root   root   4096 Dec  5 12:09 systemd-private-062a0eca7f2a44349733e78cb4abdff4-rtkit-daemon.service-ANGvoV
-drwx------ 3 root   root   4096 Dec  5 12:07 systemd-private-062a0eca7f2a44349733e78cb4abdff4-systemd-timesyncd.service-CdXUtH
--rw-rw-r-- 1 username username    0 Dec  5 12:09 unity_support_test.0
-$ ^D
-Username@your-regular-prompt:~$
-```
-### Exmples Builtin
 
-**case env and exit**
+**beksh** is allowed to be invoked interactively and non-interactively. If **beksh** is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
+
+Example:
 ```
-Username@your-regular-prompt:~$ ./hsh
-USER=julien
-LANGUAGE=en_US
-SESSION=ubuntu
-COMPIZ_CONFIG_PROFILE=ubuntu
-SHLVL=1
-HOME=/home/julien
-C_IS=Fun_:)
-DESKTOP_SESSION=ubuntu
-LOGNAME=julien
-TERM=xterm-256color
-PATH=/home/julien/bin:/home/julien/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-DISPLAY=:0
+$ echo "echo 'alx'" | ./beksh
+'alx'
+$
+```
+
+When **beksh** is invoked with standard input connected to a terminal (determined by isatty(3), the interactive mode is opened. **beksh** Will be using the following prompt `^-^ `.
+
+Example:
+```
+$./beksh
+^-^
+```
+
+If a command line argument is invoked, **beksh** will take that first argument as a file from which to read commands.
+
+Example:
+```
+$ cat text
+echo 'alx'
+$ ./beksh text
+'alx'
+$
+```
+
+### Environment
+
+Upon invocation, **beksh** receives and copies the environment of the parent process in which it was executed. This environment is an array of *name-value* strings describing variables in the format *NAME=VALUE*. A few key environmental variables are:
+
+#### HOME
+The home directory of the current user and the default directory argument for the **cd** builtin command.
+
+```
+$ echo "echo $HOME" | ./beksh
+/home/bek
+```
+
+#### PWD
+The current working directory as set by the **cd** command.
+
+```
+$ echo "echo $PWD" | ./beksh
+/home/bek/simple_shell
+```
+
+#### OLDPWD
+The previous working directory as set by the **cd** command.
+
+```
+$ echo "echo $OLDPWD" | ./beksh
+```
+
+#### PATH
+A colon-separated list of directories in which the shell looks for commands. A null directory name in the path (represented by any of two adjacent colons, an initial colon, or a trailing colon) indicates the current directory.
+
+```
+$ echo "echo $PATH" | ./beksh
+
+```
+
+### Command Execution
+
+After receiving a command, **beksh** tokenizes it into words using `" "` as a delimiter. The first word is considered the command and all remaining words are considered arguments to that command. **beksh** then proceeds with the following actions:
+1. If the first character of the command is neither a slash (`\`) nor dot (`.`), the shell searches for it in the list of shell builtins. If there exists a builtin by that name, the builtin is invoked.
+2. If the first character of the command is none of a slash (`\`), dot (`.`), nor builtin, **sodash** searches each element of the **PATH** environmental variable for a directory containing an executable file by that name.
+3. If the first character of the command is a slash (`\`) or dot (`.`) or either of the above searches was successful, the shell executes the named program with any remaining given arguments in a separate execution environment.
+
+### Exit Status 
+
+**beksh** returns the exit status of the last command executed, with zero indicating success and non-zero indicating failure.
+If a command is not found, the return status is 127; if a command is found but is not executable, the return status is 126.
+All builtins return zero on success and one or two on incorrect usage (indicated by a corresponding error message).
+
+### Signals
+
+While running in interactive mode, **beksh** ignores the keyboard input ctrl+c. Alternatively, an input of End-Of-File ctrl+d will exit the program.
+
+User hits ctrl+d in the foutrh command.
+```
+$ ./beksh
+^-^ ^C
+^-^ ^C
+^-^ ^C
+^-^
+```
+
+### Variable Replacement
+
+**beksh** interprets the `$` character for variable replacement.
+
+#### $ENV_VARIABLE
+`ENV_VARIABLE` is substituted with its value.
+
+Example:
+```
+$ echo "echo $PWD" | ./beksh
+/home/bek/simple_shell
+```
+
+#### $?
+`?` is substitued with the return value of the last program executed.
+
+Example:
+```
+$ echo "echo $?" | ./beksh
+0
+```
+
+#### $$
+The second `$` is substitued with the current process ID.
+
+Example:
+```
+$ echo "echo $$" | ./beksh
+3855
+```
+
+### Comments
+
+**beksh** ignores all words and characters preceeded by a `#` character on a line.
+
+Example:
+```
+$ echo "echo 'alx' #this will be ignored!" | ./beksh
+'alx'
+```
+
+### Operators
+
+**beksh** specially interprets the following operator characters:
+
+#### ; - Command separator
+Commands separated by a `;` are executed sequentially.
+
+Example:
+```
+$ echo "echo 'hello' ; echo 'world'" | ./beksh
+'hello'
+'world'
+```
+
+#### && - AND logical operator
+`command1 && command2`: `command2` is executed if, and only if, `command1` returns an exit status of zero.
+
+Example:
+```
+$ echo "error! && echo 'alx'" | ./beksh
+./shellby: 1: error!: not found
+$ echo "echo 'my name is' && echo 'alx'" | ./beksh
+'my name is'
+'beksh'
+```
+
+#### || - OR logical operator
+`command1 || command2`: `command2` is executed if, and only if, `command1` returns a non-zero exit status.
+
+Example:
+```
+$ echo "error! || echo 'wait for it'" | ./beksh
+./beksh: 1: error!: not found
+'wait for it'
+```
+
+The operators `&&` and `||` have equal precedence, followed by `;`.
+
+### Builtin Commands
+
+#### cd
+  * Usage: `cd [DIRECTORY]`
+  * Changes the current directory of the process to `DIRECTORY`.
+  * If no argument is given, the command is interpreted as `cd $HOME`.
+  * If the argument `-` is given, the command is interpreted as `cd $OLDPWD` and the pathname of the new working directory is printed to standad output.
+  * If the argument, `--` is given, the command is interpreted as `cd $OLDPWD` but the pathname of the new working directory is not printed.
+  * The environment variables `PWD` and `OLDPWD` are updated after a change of directory.
+
+Example:
+```
+$ ./beksh
+^-^ pwd
+/home/bek/simple_shell
+
+#### exit
+  * Usage: `exit [STATUS]`
+  * Exits the shell.
+  * The `STATUS` argument is the integer used to exit the shell.
+  * If no argument is given, the command is interpreted as `exit 0`.
+
+Example:
+```
+$ ./beksh
 $ exit
-Username@your-regular-prompt:~$ 
-
 ```
-**Case Exit Statue**
-```
-Username@your-regular-prompt:~$ ./hsh
-$ exit 98
-Username@your-regular-prompt:~$ echo $?
-98
-Username@your-regular-prompt:~$
 
-```
-Keep Exploring The echo Builtin and history ... Using The Help Builtin
+#### env
+  * Usage: `env`
+  * Prints the current environment.
 
-### Also
-* Handle Ctrl+C: your shell should not quit when the user inputs ^C
-* If no argument is given to cd the command must be interpreted like cd $HOME
-* handle the command cd -
-* Handle variables replacement
-* Handle the $? variable
-* Handle the $$ variable
-* Handle The Argument file like `./hsh test` Where test is a file filled with command and builtin to excute.
-### List of functions and system calls we could use
-List of allowed functions and system calls
-
-    access (man 2 access)
-    chdir (man 2 chdir)
-    close (man 2 close)
-    closedir (man 3 closedir)
-    execve (man 2 execve)
-    exit (man 3 exit)
-    fork (man 2 fork)
-    free (man 3 free)
-    fstat (man 2 fstat)
-    getcwd (man 3 getcwd)
-    getline (man 3 getline)
-    kill (man 2 kill)
-    lstat (man 2 lstat)
-    malloc (man 3 malloc)
-    open (man 2 open)
-    opendir (man 3 opendir)
-    perror (man 3 perror)
-    read (man 2 read)
-    readdir (man 3 readdir)
-    signal (man 2 signal)
-    stat (man 2 stat)
-    strtok (man 3 strtok)
-    wait (man 2 wait)
-    waitpid (man 2 waitpid)
-    wait3 (man 2 wait3)
-    wait4 (man 2 wait4)
-    write (man 2 write)
-    _exit (man 2 _exit)
-### Custom Function (Recreation of Standard Function in C)
- * _strncpy
- * _strlen
- * _putchar
- * _atoi
- * _puts
- * _strcmp
- * _isalpha
- * array_rev
- * intlen
- * _itoa
- * _strcat
- * _strcpy
- * _strchr
- * _strncmp
- * _strdup
- * _memcpy
- * _calloc
- * _realloc
- * _getenv
- * _getline
- * _strtok
-
-For More Info About It Check The Man Page by
+Example:
 ```
-Username@your-regular-prompt:~$ man ./man_1_simple_shell
+$ ./beksh
+$ env
+NVM_DIR=/home/vagrant/.nvm
+...
 ```
-Project Done in 15 Day
+
+#### setenv
+  * Usage: `setenv [VARIABLE] [VALUE]`
+  * Initializes a new environment variable, or modifies an existing one.
+  * Upon failure, prints a message to `stderr`.
+
+Example:
+```
+$ ./beksh
+$ setenv NAME Alx
+$ echo $NAME
+Alx
+```
+
+#### unsetenv
+  * Usage: `unsetenv [VARIABLE]`
+  * Removes an environmental variable.
+  * Upon failure, prints a message to `stderr`.
+
+Example:
+```
+$ ./beksh
+$ setenv NAME Holberton
+$ unsetenv NAME
+$ echo $NAME
+
+$
+```
+
+## Authors & Copyrights
+
+* Bereket Bayou
+
+## More information
+
+**Beksh** is a simple shell unix command interpreter that is intended to emulate the basics **sh** shell. All the information given in this README is based on the **beksh** and **bash** man (1) pages.
