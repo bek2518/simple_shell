@@ -18,8 +18,8 @@ int _alias(char **args, char __attribute__((__unused__)) **front)
 	{
 		while (temp)
 		{
-		print_alias(temp);
-		temp = temp->next;
+			print_alias(temp);
+			temp = temp->next;
 		}
 		return (ret);
 	}
@@ -39,7 +39,7 @@ int _alias(char **args, char __attribute__((__unused__)) **front)
 				temp = temp->next;
 			}
 			if (!temp)
-			ret = create_error(args + i, 1);
+				ret = create_error(args + i, 1);
 		}
 		else
 			set_alias(args[i], value);

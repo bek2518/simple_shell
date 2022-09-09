@@ -125,10 +125,11 @@ char *error_2_cd(char **args)
 	if (args[0][0] == '-')
 		_strcat(error, ": cd: Illegal option ");
 	else
+	{
 		_strcat(error, ": cd: can't cd to ");
-	
-	_strcat(error, args[0]);
-	_strcat(error, "\n");
+		_strcat(error, args[0]);
+		_strcat(error, "\n");
+	}
 
 	free(hist_str);
 	return (error);

@@ -22,12 +22,11 @@ char **_copyenv(void)
 		new_environ[index] = malloc(_strlen(environ[index]) + 1);
 		if (!new_environ[index])
 		{
-			for (index--; index >= 0; index--)
-			{
+			for (index--; index >= 0; index--)/*Subject for reinspection*/
+			
 				free(new_environ[index]);
-				free(new_environ);
-				return (NULL);
-			}
+			free(new_environ);
+			return (NULL);
 		}
 		_strcpy(new_environ[index], environ[index]);
 	}
@@ -42,11 +41,9 @@ void free_env(void)
 {
 	int index;
 
-	for (index = 0; environ[index]; index++)
-	{
+	for (index = 0; environ[index]; index++)/*subject for reinspection*/
 		free(environ[index]);
-		free(environ);
-	}
+	free(environ);
 }
 
 /**

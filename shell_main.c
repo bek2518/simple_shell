@@ -48,19 +48,23 @@ int execute(char **args, char **front)
 		if (child_pid == -1)
 		{
 			if (flag)/*Subject for reevaluation*/
+			{
 				free(command);
-			perror("Error child:");
-			return (1);
+				perror("Error child:");
+				return (1);
+			}
 		}
 		if (child_pid == 0)
 		{
 			execve(command, args, environ);
 			if (errno == EACCES)/*Subject for reevaluation*/
+			{
 				ret = (create_error(args, 126));
-			free_env();
-			free_args(args, front);
-			free_alias_list(aliases);
-			_exit(ret);
+				free_env();
+				free_args(args, front);
+				free_alias_list(aliases);
+				_exit(ret);
+			}
 		}
 		else
 		{
@@ -106,10 +110,12 @@ int main(int argc, char *argv[])
 	if (!isatty(STDIN_FILENO))/*Subject to reevaluation*/
 	{
 		while (ret != END_OF_FILE && ret != EXIT)
+		{
 			ret = handle_args(exe_ret);
-		free_env();
-		free_alias_list(aliases);
-		return (*exe_ret);
+			free_env();
+			free_alias_list(aliases);
+			return (*exe_ret);
+		}
 	}
 
 	while (1)
@@ -119,10 +125,12 @@ int main(int argc, char *argv[])
 		if (ret == END_OF_FILE || ret == EXIT)
 		{
 			if (ret == END_OF_FILE)/*Subject to reevaluation*/
+			{
 				write(STDOUT_FILENO, new_line, 1);
-			free_env();
-			free_alias_list(aliases);
-			exit(*exe_ret);
+				free_env();
+				free_alias_list(aliases);
+				exit(*exe_ret);
+			}
 		}
 	}
 
