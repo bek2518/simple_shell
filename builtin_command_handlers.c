@@ -1,113 +1,74 @@
 #include "main.h"
 
 /**
- * check_builtin - Checks if parsed command in built-in
- * @cmd: Parsed command to be check
- * Return: 0 Succes -1 Fail
- */
-
-int check_builtin(char **cmd)
+* get_builtin - Matches a command with a corresponding builtin function.
+* @command: The command to match
+* Return: A function pointer to the corresponding builtin.
+*/
+int (*get_builtin(char *command))(char **args, char **front)
 {
-	builtin fun[] = {
-		{"cd", NULL},
-		{"help", NULL},
-		{"echo", NULL},
-		{"env", NULL},
-/**		{"setenv", NULL},
-		{"unsetenv", NULL},
-		{"alias", NULL}, */
-		{"history", NULL},
-		{NULL, NULL}
-	};
-	int i = 0;
+	builtin_t funcs[] = {
+		{ "exit", shellby_exit },
+		{ "env", shellby_env },
+		{ "setenv", shellby_setenv },
+		{ "unsetenv", shellby_unsetenv },
+		{ "cd", shellby_cd },
+		{ "alias", shellby_alias },
+		{ "help", shellby_help },
+		{ NULL, NULL }
+		};
+	int i;
 
-	if (*cmd == NULL)
+	for (i = 0; funcs[i].name; i++)
 	{
-		return (-1);
+		if (_strcmp(funcs[i].name, command) == 0)
+			break;
 	}
-	while ((fun + i)->command)
-	{
-		if (_strcmp(cmd[0], (fun + i)->command) == 0)
-			return (0);
-		i++;
-	}
-	return (-1);
+	return (funcs[i].f);
 }
 
 /**
- * handle_builtin - Handles predefined built in commands
- * @cmd: Array of parsed command strings
- * @st: Status of last execution
- * Return: -1 Failure 0 Success
- */
-
-int handle_builtin(char **cmd, int st)
+* exit_builtin - Causes normal process termination
+* @args: An array of arguments containing the exit value.
+* @front: A double pointer to the beginning of args.
+* Return: If there are no arguments - -3.
+* If the given exit value is invalid - 2.
+*/
+int exit_builtin(char **args, char **front)
 {
-	builtin built_in[] = {
-		{"cd", change_dir},
-		{"env", dis_env},
-		{"help", display_help},
-		{"echo", echo_bul},
-/**		{"setenv", _setenv},
-		{"unsetenv", _unsetenv},
-		{"alias", _alias},*/
-		{"history", history_dis},
-		{NULL, NULL}
-	};
-	int i = 0;
+	int i, len_of_int = 10;
+	unsigned int num = 0, max = 1 << (sizeof(int) * 8 - 1);
 
-	while ((built_in + i)->command)
+	if (args[0])
 	{
-		if (_strcmp(cmd[0], (built_in + i)->command) == 0)
+		if (args[0][0] == '+')
 		{
-			return ((built_in + i)->function(cmd, st));
+			i = 1;
+			len_of_int++;
 		}
-		i++;
-	}
-	return (-1);
-}
-
-/**
- * exit_bul - Exit Status for built-in commands
- * @cmd: Array of parsed command strings
- * @input: Input recieved from user (to be freed)
- * @argv: Arguments before program starts(argv[0] == Shell Program Name)
- * @c: Shell execution count
- * @stat: Exit status
- */
-
-void exit_bul(char **cmd, char *input, char **argv, int c, int stat)
-{
-	int status, i = 0;
-
-	if (cmd[1] == NULL)
-	{
-		free(input);
-		free(cmd);
-		exit(stat);
-	}
-	while (cmd[1][i])
-	{
-		if (_isalpha(cmd[1][i++]) != 0)
+		for (; args[0][i]; i++)
 		{
-			_prerror(argv, c, cmd);
-			free(input);
-			free(cmd);
-			exit(2);
-		}
-		else
-		{
-			status = _atoi(cmd[1]);
-			if (status == 2)
+			if (i <= len_of_int && args[0][i] >= '0' && args[0][i] <= '9')
 			{
-				_prerror(argv, c, cmd);
-				free(input);
-				free(cmd);
-				exit(status);
+				num = (num * 10) + (args[0][i] - '0');
 			}
-			free(input);
-			free(cmd);
-			exit(status);
+			else
+			{
+				return (create_error(--args, 2));
+			}
 		}
 	}
+	else
+	{
+		return (-3);
+	}
+	if (num > max - 1)
+	{
+		return (create_error(--args, 2));
+	}
+	args -= 1;
+	free_args(args, front);
+	free_env();
+	free_alias_list(aliases);
+	exit(num);
 }

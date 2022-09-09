@@ -1,8 +1,8 @@
 #include "main.h"
 
 /**
- * help_env - Displays information on the shell by builtin command 'env'
- */
+* help_env - Displays information on the builtin command 'env'.
+*/
 void help_env(void)
 {
 	char *msg = "env: env\n\tPrints the current environment.\n";
@@ -11,8 +11,8 @@ void help_env(void)
 }
 
 /**
- * help_setenv - Displays information on the shell by builtin command 'setenv'
- */
+* help_setenv - Displays information on the builtin command 'setenv'.
+*/
 void help_setenv(void)
 {
 	char *msg = "setenv: setenv [VARIABLE] [VALUE]\n\tInitializes a new";
@@ -25,9 +25,8 @@ void help_setenv(void)
 }
 
 /**
- * help_unsetenv - Displays information on the shellby builtin command
- * 'unsetenv'
- */
+* help_unsetenv - Displays information on the builtin command 'unsetenv'.
+*/
 void help_unsetenv(void)
 {
 	char *msg = "unsetenv: unsetenv [VARIABLE]\n\tRemoves an ";
@@ -40,28 +39,31 @@ void help_unsetenv(void)
 }
 
 /**
- * display_help - display help for builtin commands
- * @cmd: parsed command
- * @st: Status of last command executed
- * Return: 0 Success
- */
-int display_help(char **cmd, __attribute__((unused))int st)
+* display_help - Displays information about builtin commands.
+* @args: An array of arguments.
+* @front: A pointer to the beginning of args.
+* Return: If an error occurs - -1 otherwise - 0.
+*/
+int display_help(char **args, char __attribute__((__unused__)) **front)
 {
-	if (!cmd[1])
+	if (!args[0])
 		help_all();
-	else if (_strcmp(cmd[1], "alias") == 0)
+	else if (_strcmp(args[0], "alias") == 0)
 		help_alias();
-	else if (_strcmp(cmd[1], "cd") == 0)
+	else if (_strcmp(args[0], "cd") == 0)
 		help_cd();
-	else if (_strcmp(cmd[1], "exit") == 0)
+	else if (_strcmp(args[0], "exit") == 0)
 		help_exit();
-	else if (_strcmp(cmd[1], "env") == 0)
+	else if (_strcmp(args[0], "env") == 0)
 		help_env();
-	else if (_strcmp(cmd[1], "setenv") == 0)
+	else if (_strcmp(args[0], "setenv") == 0)
 		help_setenv();
-	else if (_strcmp(cmd[1], "unsetenv") == 0)
+	else if (_strcmp(args[0], "unsetenv") == 0)
 		help_unsetenv();
-	else if (_strcmp(cmd[1], "help") == 0)
+	else if (_strcmp(args[0], "help") == 0)
 		help_help();
+	else
+		write(STDERR_FILENO, name, _strlen(name));
+
 	return (0);
 }
