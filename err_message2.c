@@ -20,8 +20,8 @@ char *error_126(char **args)
 
 	if (!error)
 	{
-	free(hist_str);
-	return (NULL);
+		free(hist_str);
+		return (NULL);
 	}
 
 	_strcpy(error, name);

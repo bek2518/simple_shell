@@ -70,9 +70,10 @@ void set_alias(char *var_name, char *value)
 	for (j = 0, k = 0; value[j]; j++)
 	{
 		if (value[j] != '\'' && value[j] != '"')
-		new_value[k++] = value[j];
+			new_value[k++] = value[j];
 	}
 	new_value[k] = '\0';
+	
 	while (temp)
 	{
 		if (_strcmp(var_name, temp->name) == 0)
@@ -84,7 +85,7 @@ void set_alias(char *var_name, char *value)
 		temp = temp->next;
 	}
 	if (!temp)
-	add_alias_end(&aliases, var_name, new_value);
+		add_alias_end(&aliases, var_name, new_value);
 }
 
 /**

@@ -1,140 +1,97 @@
 #include "main.h"
 
 /**
-* get_location - Locates a command in the PATH.
-* @command: The command to locate.
-* Return: If an error occurs or the command cannot be located - NULL.
-*         Otherwise - the full pathname of the command.
-*/
-char *get_location(char *command)
+ * path_cmd -  Search In $PATH for executable command
+ * @cmd: Parsed input
+ * Return: 0 on success or  1 on failure  0
+ */
+int path_cmd(char **cmd)
 {
-	char **path, *temp;
-	list_t *dirs, *head;
-	struct stat st;
+	char *path, *value, *cmd_path;
+	struct stat buf;
 
 	path = _getenv("PATH");
-	
-	if (!path || !(*path))
-		return (NULL);
-
-	dirs = get_path_dir(*path + 5);
-	head = dirs;
-
-	while (dirs)
+	value = _strtok(path, ":");
+	while (value != NULL)
 	{
-		temp = malloc(_strlen(dirs->dir) + _strlen(command) + 2);
-		if (!temp)
-			return (NULL);
-
-		_strcpy(temp, dirs->dir);
-		_strcat(temp, "/");
-		_strcat(temp, command);
-
-		if (stat(temp, &st) == 0)
+		cmd_path = build(*cmd, value);
+		if (stat(cmd_path, &buf) == 0)
 		{
-			free_list(head);
-			return (temp);
+			*cmd = _strdup(cmd_path);
+			free(cmd_path);
+			free(path);
+			return (0);
 		}
+		free(cmd_path);
+		value = _strtok(NULL, ":");
+	}
+	free(path);
+	free(value);
+	return (1);
+}
 
-		dirs = dirs->next;
-		free(temp);
+/**
+ * build - Build command
+ * @token: Executable command
+ * @value: Directory conatining Command
+ * Return: Parsed full path of command or NULL if failed
+ */
+char *build(char *token, char *value)
+{
+	char *cmd;
+	size_t len;
+
+	len = _strlen(value) + _strlen(token) + 2;
+	cmd = malloc(sizeof(char) * len);
+	if (cmd == NULL)
+	{
+		free(cmd);
+		return (NULL);
 	}
 
-	free_list(head);
+	memset(cmd, 0, len);
 
+	cmd = _strcat(cmd, value);
+	cmd = _strcat(cmd, "/");
+	cmd = _strcat(cmd, token);
+
+	return (cmd);
+}
+
+/**
+ * _getenv - Gets the value of environment variable by name
+ * @name: Environment variable name
+ * Return: The value of the environment variable or NULL if failed
+ */
+char *_getenv(char *name)
+{
+	size_t name_len, value_len;
+	char *value;
+	int i, j, k;
+
+	name_len = _strlen(name);
+	for (i = 0 ; environ[i]; i++)
+	{
+		if (_strncmp(name, environ[i], name_len) == 0)
+		{
+			value_len = _strlen(environ[i]) - name_len;
+			value = malloc(sizeof(char) * value_len);
+			if (!value)
+			{
+				free(value);
+				perror("unable to alloc");
+				return (NULL);
+			}
+
+			j = 0;
+			for (k = name_len + 1; environ[i][k]; k++, j++)
+			{
+				value[j] = environ[i][k];
+			}
+			value[j] = '\0';
+
+			return (value);
+		}
+	}
 	return (NULL);
 }
-
-/**
-* fill_path_dir - Copies path but also replaces leading/sandwiched/trailing
-*		   colons (:) with current working directory.
-* @path: The colon-separated list of directories.
-* Return: A copy of path with any leading/sandwiched/trailing colons replaced
-*	   with the current working directory.
-*/
-char *fill_path_dir(char *path)
-{
-	int i, length = 0;
-	char *path_copy, *pwd;
-
-	pwd = *(_getenv("PWD")) + 4;
-	
-	for (i = 0; path[i]; i++)
-	{
-		if (path[i] == ':')
-		{
-			if (path[i + 1] == ':' || i == 0 || path[i + 1] == '\0')
-				length += _strlen(pwd) + 1;
-			else
-				length++;
-		}
-		else
-			length++;
-	}
-	path_copy = malloc(sizeof(char) * (length + 1));
-	
-	if (!path_copy)
-		return (NULL);
-	path_copy[0] = '\0';
-	
-	for (i = 0; path[i]; i++)
-	{
-		if (path[i] == ':')
-		{
-			if (i == 0)
-			{
-				_strcat(path_copy, pwd);
-				_strcat(path_copy, ":");
-			}
-			else if (path[i + 1] == ':' || path[i + 1] == '\0')
-			{
-				_strcat(path_copy, ":");
-				_strcat(path_copy, pwd);
-			}
-			else
-				_strcat(path_copy, ":");
-		}
-		else
-		{
-			_strncat(path_copy, &path[i], 1);
-		}
-	}
-	return (path_copy);
-}
-
-/**
-* get_path_dir - Tokenizes a colon-separated list of
-*                directories into a list_s linked list.
-* @path: The colon-separated list of directories.
-* Return: A pointer to the initialized linked list.
-*/
-list_t *get_path_dir(char *path)
-{
-	int index;
-	char **dirs, *path_copy;
-	list_t *head = NULL;
-
-	path_copy = fill_path_dir(path);
-	if (!path_copy)
-		return (NULL);
-	dirs = _strtok(path_copy, ":");
-	free(path_copy);
-
-	if (!dirs)
-		return (NULL);
-
-	for (index = 0; dirs[index]; index++)
-	{
-		if (add_node_end(&head, dirs[index]) == NULL)
-		{
-			free_list(head);
-			free(dirs);
-			return (NULL);
-		}
-	}
-
-	free(dirs);
-
-	return (head);
-}
-
