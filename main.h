@@ -116,15 +116,17 @@ int check_builtin(char **cmd);
 int handle_builtin(char **cmd, int st);
 void exit_bul(char **cmd, char *input, char **argv, int c,
 		int stat);
-int change_dir(char **cmd, __attribute__((unused))int st);
+int change_dir(char **cmd, __attribute__((unused)) int st);
 int dis_env(__attribute__((unused)) char **cmd,
 		__attribute__((unused)) int st);
 int echo_bul(char **cmd, int st);
 int history_dis(__attribute__((unused))char **c,
 		__attribute__((unused)) int st);
-int _setenv(char **cmd, char __attribute__((__unused__)) **st);
-int _unsetenv(char **cmd, char __attribute__((__unused__)) **st);
-int _alias(char **cmd, char __attribute__((__unused__)) **st);
+/**
+ * int set_env(char **cmd, char __attribute__((__unused__)) **st);
+ * int _unset_env(char **cmd, char __attribute__((__unused__)) **st);
+ * int al_ias(char **cmd, char __attribute__((__unused__)) **st);
+*/
 
 /****** BUILT-IN COMMANDS STRUCT *****/
 
