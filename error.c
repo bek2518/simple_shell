@@ -88,7 +88,7 @@ int create_error(char **args, int err)
 				error = error_2_syntax(args);
 			else
 				error = error_2_cd(args);
-				break;
+			break;
 		case 126:
 			error = error_126(args);
 			break;

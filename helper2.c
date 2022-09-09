@@ -45,11 +45,15 @@ void handle_line(char **line, ssize_t read)
 					continue;
 				}
 				if (previous != ' ')
+				{
 					new_line[j++] = ' ';
 					new_line[j++] = ';';
+				}
 				if (next != ' ')
+				{
 					new_line[j++] = ' ';
 					continue;
+				}
 			}
 			else if (current == '&')
 			{
@@ -77,11 +81,15 @@ void handle_line(char **line, ssize_t read)
 		else if (current == ';')
 		{
 			if (i != 0 && old_line[i - 1] != ' ')
+			{
 				new_line[j++] = ' ';
 				new_line[j++] = ';';
+			}
 			if (next != ' ' && next != ';')
+			{
 				new_line[j++] = ' ';
 				continue;
+			}
 		}
 		new_line[j++] = old_line[i];
 	}

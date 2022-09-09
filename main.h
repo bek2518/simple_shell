@@ -79,6 +79,8 @@ int handle_args(int *exe_ret);
 int check_args(char **args);
 void free_args(char **args, char **front);
 char **replace_aliases(char **args);
+ssize_t get_new_len(char *line);
+void logical_ops(char *line, ssize_t *new_len);
 
 /* String functions */
 int _strlen(const char *s);
@@ -99,6 +101,8 @@ int _unsetenv(char **args, char __attribute__((__unused__)) **front);
 int change_dir(char **args, char __attribute__((__unused__)) **front);
 int _alias(char **args, char __attribute__((__unused__)) **front);
 int display_help(char **args, char __attribute__((__unused__)) **front);
+void set_alias(char *var_name, char *value);
+void print_alias(alias_t *alias);
 
 /* Builtin Helpers */
 char **_copyenv(void);
@@ -132,4 +136,4 @@ void help_unsetenv(void);
 void help_history(void);
 
 int proc_file_commands(char *file_path, int *exe_ret);
-#endif /* _SHELL_H_ */
+#endif /* _MAIN_H_ */

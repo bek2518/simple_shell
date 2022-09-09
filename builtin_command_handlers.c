@@ -8,13 +8,13 @@
 int (*get_builtin(char *command))(char **args, char **front)
 {
 	builtin_t funcs[] = {
-		{ "exit", shellby_exit },
-		{ "env", shellby_env },
-		{ "setenv", shellby_setenv },
-		{ "unsetenv", shellby_unsetenv },
-		{ "cd", shellby_cd },
-		{ "alias", shellby_alias },
-		{ "help", shellby_help },
+		{ "exit", exit_builtin },
+		{ "env", _env },
+		{ "setenv", _setenv },
+		{ "unsetenv", _unsetenv },
+		{ "cd", change_dir },
+		{ "alias", _alias },
+		{ "help", display_help },
 		{ NULL, NULL }
 		};
 	int i;

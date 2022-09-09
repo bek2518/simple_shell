@@ -110,8 +110,8 @@ char *error_2_cd(char **args)
 
 	if (args[0][0] == '-')
 		args[0][2] = '\0';
-		len = _strlen(name) + _strlen(hist_str) + _strlen(args[0]) + 24;
-		error = malloc(sizeof(char) * (len + 1));
+	len = _strlen(name) + _strlen(hist_str) + _strlen(args[0]) + 24;
+	error = malloc(sizeof(char) * (len + 1));
 	if (!error)
 	{
 		free(hist_str);
@@ -126,8 +126,9 @@ char *error_2_cd(char **args)
 		_strcat(error, ": cd: Illegal option ");
 	else
 		_strcat(error, ": cd: can't cd to ");
-		_strcat(error, args[0]);
-		_strcat(error, "\n");
+	
+	_strcat(error, args[0]);
+	_strcat(error, "\n");
 
 	free(hist_str);
 	return (error);

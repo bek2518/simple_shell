@@ -78,8 +78,8 @@ char **_strtok(char *line, char *delim)
 		{
 			for (index -= 1; index >= 0; index--)
 				free(ptr[index]);
-				free(ptr);
-				return (NULL);/*Subject for inspection*/
+			free(ptr);
+			return (NULL);/*Subject for inspection*/
 		}
 
 		for (l = 0; l < letters; l++)

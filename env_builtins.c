@@ -56,7 +56,7 @@ int _setenv(char **args, char __attribute__((__unused__)) **front)
 	}
 	for (size = 0; environ[size]; size++);
 
-		new_environ = malloc(sizeof(char *) * (size + 2));
+	new_environ = malloc(sizeof(char *) * (size + 2));
 	if (!new_environ)
 	{
 		free(new_value);
@@ -80,7 +80,7 @@ int _setenv(char **args, char __attribute__((__unused__)) **front)
 * @front: A double pointer to the beginning of args.
 * Return: If an error occurs - -1 otherwise - 0.
 */
-int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front)
+int _unsetenv(char **args, char __attribute__((__unused__)) **front)
 {
 	char **env_var, **new_environ;
 	size_t size;
@@ -93,7 +93,8 @@ int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front)
 		return (0);
 
 	for (size = 0; environ[size]; size++);
-		new_environ = malloc(sizeof(char *) * size);
+		
+	new_environ = malloc(sizeof(char *) * size);
 	if (!new_environ)
 		return (create_error(args, -1));
 

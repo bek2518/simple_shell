@@ -29,7 +29,7 @@ char *_strcpy(char *dest, const char *src)
 
 	for (i = 0; src[i] != '\0'; i++)
 		dest[i] = src[i];
-		dest[i] = '\0';
+	dest[i] = '\0';
 	return (dest);
 }
 
@@ -52,7 +52,7 @@ char *_strcat(char *dest, const char *src)
 
 	while (*srcTemp != '\0')
 		*destTemp++ = *srcTemp++;
-		*destTemp = '\0';
+	*destTemp = '\0';
 	return (dest);
 }
 
@@ -70,6 +70,6 @@ char *_strncat(char *dest, const char *src, size_t n)
 
 	for (i = 0; i < n && src[i] != '\0'; i++)
 		dest[dest_len + i] = src[i];
-		dest[dest_len + i] = '\0';
+	dest[dest_len + i] = '\0';
 	return (dest);
 }
