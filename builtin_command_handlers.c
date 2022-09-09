@@ -13,6 +13,9 @@ int check_builtin(char **cmd)
 		{"help", NULL},
 		{"echo", NULL},
 		{"env", NULL},
+		{"setenv", NULL},
+		{"unsetenv", NULL},
+		{"alias", NULL},
 		{"history", NULL},
 		{NULL, NULL}
 	};
@@ -45,6 +48,9 @@ int handle_builtin(char **cmd, int st)
 		{"env", dis_env},
 		{"help", display_help},
 		{"echo", echo_bul},
+		{"setenv", _setenv},
+		{"unsetenv", _unsetenv},
+		{"alias", _alias},
 		{"history", history_dis},
 		{NULL, NULL}
 	};

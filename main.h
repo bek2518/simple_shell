@@ -122,6 +122,9 @@ int dis_env(__attribute__((unused)) char **cmd,
 int echo_bul(char **cmd, int st);
 int history_dis(__attribute__((unused))char **c,
 		__attribute__((unused)) int st);
+int _setenv(char **cmd, char __attribute__((__unused__)) **st);
+int _unsetenv(char **cmd, char __attribute__((__unused__)) **st);
+int _alias(char **cmd, char __attribute__((__unused__)) **st);
 
 /****** BUILT-IN COMMANDS STRUCT *****/
 
